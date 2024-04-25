@@ -2,7 +2,7 @@ import express from "express";
 require("dotenv").config();
 import router from "./routers/auth";
 import api from "./routers/api"
-
+const bodyParser = require('body-parser');
 const db = require("./config/database/mongodb");
 const morgan = require("morgan");
 const app = express();
@@ -20,6 +20,8 @@ app.use(cors(corsOptions));
 app.use(morgan("combined"));
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 //routers
 app.use("/api/auth", router);
 app.use("/api", api)

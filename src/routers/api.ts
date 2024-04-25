@@ -24,8 +24,10 @@ import { createContributions, displayContributions, displayContributionsByID } f
 import { createStatus, displayStatus } from "../controllers/statusController";
 import {
     createSubmission,
+    deleteSubmissison,
     displaySubmission,
     displaySubmissionByID,
+    updateSubmission,
     updateSubmissionStatus
 } from "../controllers/submissionController";
 import { displayFile } from '../controllers/fileController';
@@ -75,6 +77,8 @@ router.post("/submission", cpUpload,  createSubmission)
 router.get("/submissions",  displaySubmission)
 router.get("submission/:_id",  displaySubmissionByID)
 router.patch("/submission/:_id", updateSubmissionStatus)
+router.put("/submissions/:_id", updateSubmission)
+router.delete("/submission/:_id", deleteSubmissison)
 
 //File
 export default router;

@@ -39,7 +39,7 @@ export const displayContributions = async(req: Request, res: Response) => {
 export const displayContributionsByID = async(req: Request, res: Response) => {
     try {
         const contributionID = await contributionsModel.findById(req.params);
-        return res.status(201).json(contributionID);
+        return res.status(201).json(contributionID)
     } catch(err: any) {
         return res.status(500).json({ message: err.message });
     }

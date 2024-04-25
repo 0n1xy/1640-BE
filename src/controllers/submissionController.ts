@@ -10,7 +10,7 @@ import statusModel from "../models/statusModel";
 import facultyModel from "../models/facultyModel";
 import { emailNotification } from "../services/notificationServices";
 import { mailOption, transporter } from "../config/service/mailService";
-import JSZip from "jszip";
+import JSZip, { file } from "jszip";
 
 export const createSubmission = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -49,7 +49,7 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
         if (docs) {
             const doc: Express.Multer.File = docs[0];
             try {
-                
+
                 const dateTime: Date = new Date();
                 const storageRef = ref(
                     storage,
@@ -92,7 +92,7 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
             fileID: file._id,
             userID,
         });
-
+        await emailNotification(transporter, mailOption)
         await submission.save();
 
         return res.status(201).json("Submission created");
@@ -100,15 +100,6 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
         return res.status(500).json({ message: e.message });
     }
 };
-
-export const downloadByContribution = async(req: Request, res: Response) => {
-    try {
-        const contributionID = contributionsModel.findOne(req.params);
-
-    } catch(e: any) {
-
-    }
-}
 
 export const displaySubmission = async (req: Request, res: Response) => {
     try {
@@ -163,9 +154,26 @@ export const updateSubmission = async (req: Request, res: Response) => {
         if (!submissionID) {
             res.status(404).json("Can't find any submission")
         } else {
-
+            await submissionModel.findByIdAndUpdate(submissionID._id, {
+                description: req.body.description
+            })
+            return res.status(201).json("Submission updated");
         }
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
+    }
+}
+
+export const deleteSubmissison = async(req: Request, res: Response) => {
+    try {
+        const submissionID = await submissionModel.findById(req.params)
+        if (!submissionID) {
+            res.status(404).json("Can't find any submission")
+        } else {
+            await submissionModel.findByIdAndDelete(submissionID._id)
+            return res.status(201).json("Submission delete");
+        }
+    } catch (error) {
+        
     }
 }
