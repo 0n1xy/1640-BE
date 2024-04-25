@@ -106,9 +106,7 @@ export const displaySubmission = async (req: Request, res: Response) => {
                 message: "Can't find any Submission",
             });
         } else {
-            return res.send({
-                data: submission,
-            });
+            return res.status(200).json(submission)
         }
 
     } catch (error: any) {

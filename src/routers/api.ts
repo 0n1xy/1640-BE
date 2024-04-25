@@ -5,7 +5,6 @@ const router: Router = Router();
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-import { uploadImage, uploadDoc } from './../services/uploadServices';
 
 import {
     createRole,
@@ -28,6 +27,7 @@ import {
     displaySubmissionByID,
     updateSubmissionStatus
 } from "../controllers/submissionController";
+import { displayFile } from '../controllers/fileController';
 
 
 //role
@@ -55,6 +55,9 @@ router.get("/faculties", displayFaculty);
 router.post("/status",  createStatus)
 router.get("/status",  displayStatus)
 
+
+//File
+router.get("/file/:_id", displayFile)
 // Mail
 
 
