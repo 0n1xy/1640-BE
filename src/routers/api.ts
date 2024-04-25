@@ -77,7 +77,7 @@ router.post("/submission", cpUpload,  createSubmission)
 router.get("/submissions",  displaySubmission)
 router.get("submission/:_id",  displaySubmissionByID)
 router.patch("/submission/:_id", updateSubmissionStatus)
-router.put("/submissions/:_id", updateSubmission)
+router.put("/submissions/:_id", cpUpload ,updateSubmission)
 router.delete("/submission/:_id", deleteSubmissison)
 
 //File

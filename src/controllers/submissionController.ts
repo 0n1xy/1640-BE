@@ -81,14 +81,14 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
 
         const statusID = await statusModel.findOne({ statusName: req.body.status });
         const contributionID = await contributionsModel.findOne({ contributionTitle: req.body.contributionTitle });
-        const facultyID = await facultyModel.findOne({ facultyName: req.body.faculty })
+        // const facultyID = await facultyModel.findOne({ facultyName: req.body.faculty })
         const userID = req.body.userID;
         const submission: ISubmission = new submissionModel({
             _id: uuid(),
             description: req.body.description,
             statusID: statusID?._id,
             contributionID: contributionID?._id,
-            facultyID: facultyID?._id,
+            facultyID: req.body.facultyID,
             fileID: file._id,
             userID,
         });
@@ -154,10 +154,84 @@ export const updateSubmission = async (req: Request, res: Response) => {
         if (!submissionID) {
             res.status(404).json("Can't find any submission")
         } else {
-            await submissionModel.findByIdAndUpdate(submissionID._id, {
-                description: req.body.description
-            })
-            return res.status(201).json("Submission updated");
+            
+            try {
+                let imageUploadURL: string = "";
+                let docUploadURL: string = "";
+        
+                // Handling image files
+                const images: Express.Multer.File[] | undefined = (req.files as any)['images'];
+                if (images) {
+                    for (const image of images) {
+                        try {
+                            const dateTime: Date = new Date();
+                            const storageRef = ref(
+                                storage,
+                                `images/${image.originalname + "       " + dateTime}`
+                            );
+                            const metadata = {
+                                contentType: image.mimetype,
+                            };
+                            const snapshot: UploadResult = await uploadBytesResumable(
+                                storageRef,
+                                image.buffer,
+                                metadata
+                            );
+                            const downloadURL: string = await getDownloadURL(snapshot.ref);
+                            console.log("Image successfully uploaded.");
+                            imageUploadURL = downloadURL;
+                        } catch (error: any) {
+                            return res.status(400).send(error.message);
+                        }
+                    }
+                }
+        
+                // Handling document file
+                const docs: Express.Multer.File[] | undefined = (req.files as any)['docs'];
+                if (docs) {
+                    const doc: Express.Multer.File = docs[0];
+                    try {
+        
+                        const dateTime: Date = new Date();
+                        const storageRef = ref(
+                            storage,
+                            `docs/${doc.originalname}`
+                        );
+                        const metadata = {
+                            contentType: doc.mimetype,
+                        };
+                        const snapshot: UploadResult = await uploadBytesResumable(
+                            storageRef,
+                            doc.buffer,
+                            metadata
+                        );
+                        const downloadURL: string = await getDownloadURL(snapshot.ref);
+                        console.log("Document successfully uploaded.");
+                        docUploadURL = downloadURL;
+                    } catch (error) {
+                        console.log("Upload fail");
+                    }
+                }
+        
+                const file: IFile = new fileModel({
+                    _id: uuid(),
+                    imageURL: imageUploadURL,
+                    docURL: docUploadURL,
+                });
+        
+                await file.save();
+        
+                
+                await submissionModel.findByIdAndUpdate(submissionID._id, {
+                    description: req.body.description,
+                    fileID: file._id,
+                })
+        
+                return res.status(201).json("Submission update");
+            } catch (e: any) {
+                return res.status(500).json({ message: e.message });
+            }
+
         }
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
