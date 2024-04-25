@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { uuid } from "uuidv4";
 import Faculty, {IFaculty} from "../models/facultyModel";
+import facultyModel from "../models/facultyModel";
 
 
 export const createFaculty = async(req: Request, res: Response) => {
@@ -22,5 +23,14 @@ export const displayFaculty = async(req: Request, res: Response) => {
         return res.status(200).json(faculty)
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
+    }
+}
+
+export const displayByID = async(req: Request, res: Response) => {
+    try {
+        const facultyID = await facultyModel.findById(req.params);
+        return res.status(201).json(facultyID);
+    } catch(err: any) {
+        return res.status(500).json({ message: err.message });
     }
 }

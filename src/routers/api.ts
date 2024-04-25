@@ -16,6 +16,7 @@ import {
 
 import {
     createFaculty,
+    displayByID,
     displayFaculty,
 } from '../controllers/facultyController';
 
@@ -49,9 +50,8 @@ router.get("/contribution/:_id",  displayContributionsByID)
 //[authMiddleware.authentication, authMiddleware.isAdmin],
 router.post("/faculty",   createFaculty);
 router.get("/faculties", displayFaculty);
-// router.get("/role/:_id", [authMiddleware.authentication, authMiddleware.isAdmin], displayRoleID);
-// router.put("/role/:_id", [authMiddleware.authentication, authMiddleware.isAdmin], updateRole);
-// router.delete("/role/:_id", [authMiddleware.authentication, authMiddleware.isAdmin], deleteRole);
+router.get("/faculty/:_id", displayByID);
+
 
 //Status
 router.post("/status",  createStatus)
