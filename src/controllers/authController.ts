@@ -69,6 +69,7 @@ export const login = async (req: Request, res: Response) => {
                     refresh_token: refresh_token,
                     role: userRole?.roleName,
                     userID: user?._id,
+                    facultyID: user?.facultyID,
                     responseStatus: "Login successfully",
                 });
             }
