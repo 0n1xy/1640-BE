@@ -4,6 +4,7 @@ import CryptoJS from "crypto-js";
 import { uuid } from "uuidv4";
 import User, { IUser } from './../models/userModel';
 import roleModel from "../models/roleModel";
+import facultyModel from "../models/facultyModel";
 
 var jwt = require('jsonwebtoken');
 
@@ -67,6 +68,7 @@ export const login = async (req: Request, res: Response) => {
                     access_token: access_token,
                     refresh_token: refresh_token,
                     role: userRole?.roleName,
+                    userID: user?._id,
                     responseStatus: "Login successfully",
                 });
             }
@@ -82,6 +84,7 @@ export const login = async (req: Request, res: Response) => {
 export const register = async(req: Request, res: Response) => {
     try {
         const roleID = await roleModel.findOne({roleName: req.body.roleName});
+        const facultyID = await facultyModel.findOne({facultyName: req.body.facultyName})
         const ciphertext = CryptoJS.AES.encrypt(
             JSON.stringify(req.body.password),
             "secret key 123"
@@ -90,9 +93,10 @@ export const register = async(req: Request, res: Response) => {
             _id: uuid(),
             email: req.body.email,
             password: ciphertext,
-            userName: req.body.userName,
+            userName: req.body.username,
             dOb: req.body.dob,
             role: roleID?.id,
+            facultyID: facultyID?._id
         })
         await user.save();
         return res.status(201).json("User created");

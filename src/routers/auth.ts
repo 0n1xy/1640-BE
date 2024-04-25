@@ -9,5 +9,5 @@ import {
 
 
 router.post("/login", login)
-router.post("/register", [authMiddleware.authentication, authMiddleware.isAdmin], register)
+router.post("/register", register)
 export default router;

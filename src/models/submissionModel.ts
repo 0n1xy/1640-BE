@@ -6,6 +6,7 @@ export interface ISubmission extends Document {
   contributionID: string;
   facultyID: string;
   fileID: string,
+  userID: string,
 }
 
 const submissionSchema = new Schema(
@@ -17,6 +18,7 @@ const submissionSchema = new Schema(
     contributionID: { type: String, require, ref: "Contributions" },
     facultyID: { type: String, require, ref: "Faculty" },
     fileID: { type: String, require, ref: "File" },
+    userID: {type: String, require },
     createdAt: { type: Date, default: Date.now },
     updateAt: { type: Date, default: Date.now },
   },

@@ -19,7 +19,7 @@ import {
     displayFaculty,
 } from '../controllers/facultyController';
 
-import { createContributions, displayContributions } from './../controllers/contributionController';
+import { createContributions, displayContributions, displayContributionsByID } from './../controllers/contributionController';
 import { createStatus, displayStatus } from "../controllers/statusController";
 import {
     createSubmission,
@@ -28,6 +28,7 @@ import {
     updateSubmissionStatus
 } from "../controllers/submissionController";
 import { displayFile } from '../controllers/fileController';
+import { displayReport } from '../controllers/reportController';
 
 
 //role
@@ -42,6 +43,7 @@ router.delete("/role/:_id",  deleteRole);
 //[authMiddleware.authentication, authMiddleware.isAdmin],
 router.post("/contribution", createContributions)
 router.get("/contributions",  displayContributions)
+router.get("/contribution/:_id",  displayContributionsByID)
 
 //Faculty
 //[authMiddleware.authentication, authMiddleware.isAdmin],
@@ -55,6 +57,8 @@ router.get("/faculties", displayFaculty);
 router.post("/status",  createStatus)
 router.get("/status",  displayStatus)
 
+//Report
+router.get("/reports", displayReport);
 
 //File
 router.get("/file/:_id", displayFile)

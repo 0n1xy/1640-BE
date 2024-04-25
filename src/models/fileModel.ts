@@ -9,7 +9,7 @@ const fileSchema = new Schema(
   {
     _id: { type: String, require },
     imageURL: { type: Array<String>, require },
-    docURL: { type: Array<String>, require },
+    docURL: { type: String, require },
     createdAt: { type: Date, default: Date.now },
     updateAt: { type: Date, default: Date.now },
   },

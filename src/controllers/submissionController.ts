@@ -10,6 +10,7 @@ import statusModel from "../models/statusModel";
 import facultyModel from "../models/facultyModel";
 import { emailNotification } from "../services/notificationServices";
 import { mailOption, transporter } from "../config/service/mailService";
+import JSZip from "jszip";
 
 export const createSubmission = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -48,6 +49,7 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
         if (docs) {
             const doc: Express.Multer.File = docs[0];
             try {
+                
                 const dateTime: Date = new Date();
                 const storageRef = ref(
                     storage,
@@ -80,13 +82,15 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
         const statusID = await statusModel.findOne({ statusName: req.body.status });
         const contributionID = await contributionsModel.findOne({ contributionTitle: req.body.contributionTitle });
         const facultyID = await facultyModel.findOne({ facultyName: req.body.faculty })
+        const userID = req.body.userID;
         const submission: ISubmission = new submissionModel({
             _id: uuid(),
             description: req.body.description,
             statusID: statusID?._id,
             contributionID: contributionID?._id,
             facultyID: facultyID?._id,
-            fileID: file._id
+            fileID: file._id,
+            userID,
         });
 
         await submission.save();
@@ -96,6 +100,15 @@ export const createSubmission = async (req: Request, res: Response): Promise<Res
         return res.status(500).json({ message: e.message });
     }
 };
+
+export const downloadByContribution = async(req: Request, res: Response) => {
+    try {
+        const contributionID = contributionsModel.findOne(req.params);
+
+    } catch(e: any) {
+
+    }
+}
 
 export const displaySubmission = async (req: Request, res: Response) => {
     try {
@@ -114,11 +127,11 @@ export const displaySubmission = async (req: Request, res: Response) => {
     }
 };
 
-export const displaySubmissionByID = async(req: Request, res: Response) => {
+export const displaySubmissionByID = async (req: Request, res: Response) => {
     try {
-        
+
     } catch (error: any) {
-        return res.status(500).json({message: error.message})
+        return res.status(500).json({ message: error.message })
     }
 }
 
@@ -130,7 +143,7 @@ export const updateSubmissionStatus = async (req: Request, res: Response) => {
         } else {
             const statusInput = req.body.status
             const statusIDUpdate = await statusModel.findOne({ statusName: statusInput })
-            if (statusInput === "Accept") {
+            if (statusInput == "Accept") {
                 await submissionModel.findByIdAndUpdate(req.params, { statusID: statusIDUpdate?._id })
                 await emailNotification(transporter, mailOption)
                 return res.status(201).json("Submission updated");
@@ -138,22 +151,21 @@ export const updateSubmissionStatus = async (req: Request, res: Response) => {
                 await submissionModel.findByIdAndUpdate(req.params, { statusID: statusIDUpdate?._id })
                 return res.status(201).json("Submission updated");
             }
-
         }
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }
 }
 
-export const updateSubmission = async(req: Request, res: Response) => {
+export const updateSubmission = async (req: Request, res: Response) => {
     try {
         const submissionID = await submissionModel.findById(req.params)
         if (!submissionID) {
             res.status(404).json("Can't find any submission")
         } else {
-            
+
         }
-    } catch (error : any) {
+    } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }
 }

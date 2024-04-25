@@ -1,20 +1,5 @@
 import nodemailer from "nodemailer";
 
-// const getManagerEmail = async () => {
-//   const role = await roleModel.findOne({ roleName: "Manager" });
-//   if (role) {
-//       const managers = await userModel.find({ role: role._id });
-//       const managerEmails: string[] = [];
-//       managers.forEach(managers => {
-//         managerEmails.push(managers.email);
-//       });
-//       return managerEmails
-//     } else {
-//       console.log("Role not found");
-//       return [];
-//     }
-// }
-
 var mailList: any[] = [
   "trankha.230102@gmail.com",
   "lamlhdgcs200675@fpt.edu.vn"

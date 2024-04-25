@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { uuid } from "uuidv4";
 import Contributions, { IContributions } from "../models/contributionsModel";
+import contributionsModel from "../models/contributionsModel";
 
 
 export const createContributions = async(req: Request, res: Response) => {
@@ -32,5 +33,14 @@ export const displayContributions = async(req: Request, res: Response) => {
         return res.status(200).json(contribution)
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
+    }
+}
+
+export const displayContributionsByID = async(req: Request, res: Response) => {
+    try {
+        const contributionID = await contributionsModel.findById(req.params);
+        return res.status(201).json(contributionID);
+    } catch(err: any) {
+        return res.status(500).json({ message: err.message });
     }
 }
