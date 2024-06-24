@@ -1,8 +1,6 @@
 import { Document, Schema, model } from "mongoose";
 
-export interface IRole extends Document {
-    roleName: string;
-}
+
 
 const roleSchema = new Schema(
   {
